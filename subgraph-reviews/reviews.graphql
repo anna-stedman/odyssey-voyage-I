@@ -1,3 +1,7 @@
+extend schema
+  @link(url: "https://specs.apollo.dev/federation/v2.0",
+        import: ["@key"])
+
 type Query {
   "The three latest reviews submitted for FlyBy's locations"
   latestReviews: [Review!]!
@@ -9,6 +13,21 @@ type Review {
   comment: String
   "A number from 1 - 5 with 1 being lowest and 5 being highest"
   rating: Int
+  "The location the review is about"
+  location: Location
+}
+
+# By default, a subgraph should only contribute fields that are not defined by other subgraphs
+# with the exception of @key (primary key) fields
+
+#We can stub the Location type and only include the information needed in reviews subgraph. 
+#We can include resolvable: false in @key if the reviews subgraph is not responsible for resolving any of the entity's other fields
+type Location @key(fields: "id") {
+  id: ID!
+  "The calculated overall rating based on all reviews"
+  overallRating: Float
+  "All submitted reviews about this location"
+  reviewsForLocation: [Review]!
 }
 
 type Mutation {

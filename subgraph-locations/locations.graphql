@@ -1,3 +1,7 @@
+extend schema
+  @link(url: "https://specs.apollo.dev/federation/v2.0",
+        import: ["@key"])
+
 type Query {
   "The full list of locations presented by the Interplanetary Space Tourism department"
   locations: [Location!]!
@@ -5,7 +9,8 @@ type Query {
   location(id: ID!): Location
 }
 
-type Location {
+#The key directive turns the location type into an entity which can be used over multiple subgraphs
+type Location @key(fields: "id") {
   id: ID!
   "The name of the location"
   name: String!
